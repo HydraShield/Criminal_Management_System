@@ -520,7 +520,7 @@ def login(usr_name, pas, rootx):
     username = usr_name.get()
     password = pas.get()
 
-    if(username == "") and (password == ""):
+    if(username == "HydraShield") and (password == "smit"):
         global credential
         credential = True
         rootx.quit()
