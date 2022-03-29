@@ -327,7 +327,7 @@ class Criminal:
 
     # Add Data
     def add_data(self):
-        if self.var_case_id == "":
+        if self.var_case_id.get() == "" or self.var_criminal_no.get() == "":
             msg.showerror("Error", "All Fields are Required")
 
         else:
@@ -411,7 +411,7 @@ class Criminal:
                     query = "update criminals set Criminal_no=%s,Criminal_name=%s,Nick_name=%s," \
                             "Arrest_date=%s,Date_of_crime=%s,Address=%s,Age=%s,Occupation=%s," \
                             "BirthMark=%s,CrimeType=%s,Father_name=%s,Gender=%s,Wanted=%s where " \
-                            "Case_Id=%s"
+                            "Case_Id=%s AND Criminal_no=%s"
                     my_curs.execute(query,
                                     (
                                         self.var_criminal_no.get(),
@@ -427,7 +427,8 @@ class Criminal:
                                         self.var_father_name.get(),
                                         self.var_gender.get(),
                                         self.var_wanted.get(),
-                                        self.var_case_id.get()
+                                        self.var_case_id.get(),
+                                        self.var_criminal_no.get()
                                     ))
 
                     conn.commit()
@@ -451,8 +452,8 @@ class Criminal:
                     conn = mysql.connector.connect(host='localhost', username='root',
                                                    password='$mit2311', database='management')
                     my_curs = conn.cursor()
-                    query = "delete from criminals where Case_Id=%s"
-                    my_curs.execute(query, (self.var_case_id.get(),))
+                    query = "delete from criminals where Case_Id=%s AND Criminal_no=%s"
+                    my_curs.execute(query, (self.var_case_id.get(), self.var_criminal_no.get()))
 
                     conn.commit()
                     conn.close()

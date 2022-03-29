@@ -327,7 +327,7 @@ class Criminal:
 
     # Add Data
     def add_data(self):
-        if self.var_case_id == "":
+        if self.var_case_id == "" or self.var_criminal_no == "":
             msg.showerror("Error", "All Fields are Required")
 
         else:
@@ -335,28 +335,59 @@ class Criminal:
                 conn = mysql.connector.connect(host='localhost', username='root',
                                                password='$mit2311', database='management2')
                 my_curs = conn.cursor()
-                my_curs.execute("insert into criminals values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                                (
-                                    self.var_criminal_no.get(),
-                                    self.var_name.get(),
-                                    self.var_nickname.get(),
-                                    self.var_arrest_date.get(),
-                                    self.var_address.get(),
-                                    self.var_age.get(),
-                                    self.var_occupation.get(),
-                                    self.var_father_name.get(),
-                                    self.var_gender.get(),
-                                    self.var_wanted.get(),
-                                    self.var_birthmark.get()
-                                ))
+                if self.var_criminal_no == "":
+                    my_curs.execute("insert into crime values(%s, %s, %s)",
+                                    (
+                                        self.var_case_id.get(),
+                                        self.var_date_of_crime.get(),
+                                        self.var_crime_type.get(),
+                                    ))
 
-                my_curs.execute("insert into crime values(%s, %s, %s, %s)",
-                                (
-                                    self.var_case_id.get(),
-                                    self.var_date_of_crime.get(),
-                                    self.var_crime_type.get(),
-                                    self.var_criminal_no.get()
-                                ))
+                elif self.var_case_id == "":
+                    my_curs.execute("insert into criminals values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                    (
+                                        self.var_criminal_no.get(),
+                                        self.var_name.get(),
+                                        self.var_nickname.get(),
+                                        self.var_arrest_date.get(),
+                                        self.var_address.get(),
+                                        self.var_age.get(),
+                                        self.var_occupation.get(),
+                                        self.var_father_name.get(),
+                                        self.var_gender.get(),
+                                        self.var_wanted.get(),
+                                        self.var_birthmark.get()
+                                    ))
+
+                else:
+                    try:
+                        my_curs.execute("insert into criminals values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                        (
+                                            self.var_criminal_no.get(),
+                                            self.var_name.get(),
+                                            self.var_nickname.get(),
+                                            self.var_arrest_date.get(),
+                                            self.var_address.get(),
+                                            self.var_age.get(),
+                                            self.var_occupation.get(),
+                                            self.var_father_name.get(),
+                                            self.var_gender.get(),
+                                            self.var_wanted.get(),
+                                            self.var_birthmark.get()
+                                        ))
+
+                        my_curs.execute("insert into crime values(%s, %s, %s)",
+                                        (
+                                            self.var_case_id.get(),
+                                            self.var_date_of_crime.get(),
+                                            self.var_crime_type.get()
+                                        ))
+                    finally:
+                        my_curs.execute("insert into crime values(%s, %s)",
+                                        (
+                                            self.var_case_id.get(),
+                                            self.var_criminal_no.get()
+                                        ))
 
                 conn.commit()
                 conn.close()
@@ -372,7 +403,8 @@ class Criminal:
         conn = mysql.connector.connect(host='localhost', username='root',
                                        password='$mit2311', database='management2')
         my_curs = conn.cursor()
-        my_curs.execute("select * from criminals c1 join crime c2 on c1.Criminal_no=c2.Criminal_no where 1")
+        my_curs.execute("select * from criminals c1 join map m on c1.Criminal_no=m.Criminal_no "
+                        "join crime c2 on c2.Crime_id=m.Crime_id where 1")
         data = my_curs.fetchall()
         if len(data) != 0:
             self.criminal_table.delete(*self.criminal_table.get_children())
